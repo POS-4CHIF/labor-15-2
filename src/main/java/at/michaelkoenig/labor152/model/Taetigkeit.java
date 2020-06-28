@@ -1,6 +1,10 @@
 package at.michaelkoenig.labor152.model;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import javax.persistence.*;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
 
@@ -48,7 +52,7 @@ public class Taetigkeit {
     }
 
     @Basic
-    @Size(min = 0)
+    @Min(value = 1)
     @Column(name = "taet_dauer", nullable = true)
     public Integer getTaetDauer() {
         return taetDauer;

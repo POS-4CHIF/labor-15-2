@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.net.URI;
 import java.time.LocalDate;
@@ -54,19 +55,21 @@ public class TaetigkeitResource {
     }
 
     @GetMapping("/employees/activities/{empid}/{startdate}/{enddate}")
-    public List<Taetigkeit> getActivitiesBetween(@PathVariable String empid, @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startdate, @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate enddate) {
+    public List<Taetigkeit> getActivitiesBetween(@PathVariable String empid, @PathVariable @DateTimeFormat(pattern = "yyyy-dd-MM") LocalDate startdate, @PathVariable @DateTimeFormat(pattern = "yyyy-dd-MM") LocalDate enddate) {
         Optional<Mitarbeiter> mitarbeiter = mitarbeiterRepository.findById(empid);
         if (!mitarbeiter.isPresent())
             throw new RestException("Can't find employee " + empid, HttpStatus.NOT_FOUND);
-        return taetigkeitRepository.findBetweenDates(startdate, enddate);
+
+        return taetigkeitRepository.findAllByTaetMitIdEqualsAndTaetDatumBetween(empid, startdate, enddate);
     }
 
     @DeleteMapping("/employees/{empid}")
+    @Transactional
     public void deleteEmployee(@PathVariable String empid) {
         Optional<Mitarbeiter> mitarbeiter = mitarbeiterRepository.findById(empid);
         if (!mitarbeiter.isPresent())
             throw new RestException("Can't find employee " + empid, HttpStatus.NOT_FOUND);
-        taetigkeitRepository.deleteAllByUserId(empid);
+        taetigkeitRepository.deleteAllByTaetMitId(empid);
         mitarbeiterRepository.deleteById(empid);
     }
 
@@ -80,7 +83,7 @@ public class TaetigkeitResource {
     }
 
     @GetMapping("/activities/{date}")
-    public List<Taetigkeit> getActivitiesByDate(@PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
-        return taetigkeitRepository.findByDate(date);
+    public List<Taetigkeit> getActivitiesByDate(@PathVariable @DateTimeFormat(pattern = "yyyy-dd-MM") LocalDate date) {
+        return taetigkeitRepository.findAllByTaetDatumEquals(date);
     }
 }

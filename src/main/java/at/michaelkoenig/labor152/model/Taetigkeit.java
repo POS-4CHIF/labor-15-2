@@ -38,7 +38,7 @@ public class Taetigkeit {
     }
 
     @Basic
-    @Column(name = "taet_datum", nullable = true, length = 10)
+    @Column(name = "taet_datum", nullable = true, length = 10, columnDefinition = "VARCHAR")
     public LocalDate getTaetDatum() {
         return taetDatum;
     }
@@ -94,12 +94,12 @@ public class Taetigkeit {
         result = 31 * result + (taetMitId != null ? taetMitId.hashCode() : 0);
         return result;
     }
-
-    @ManyToOne
-    @JoinColumn(name = "taet_mit_id", referencedColumnName = "mit_id", nullable = false)
-    public Mitarbeiter getMitarbeiterByTaetMitId() {
-        return mitarbeiterByTaetMitId;
-    }
+//
+//    @ManyToOne
+//    @JoinColumn(name = "taet_mit_id", referencedColumnName = "mit_id", nullable = false)
+//    public Mitarbeiter getMitarbeiterByTaetMitId() {
+//        return mitarbeiterByTaetMitId;
+//    }
 
     public void setMitarbeiterByTaetMitId(Mitarbeiter mitarbeiterByTaetMitId) {
         this.mitarbeiterByTaetMitId = mitarbeiterByTaetMitId;
